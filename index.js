@@ -33,7 +33,14 @@ function quiz() {
       console.log('Не молодец');
     }
   }
-  console.log(`Спасибо ${score}`);
+  console.clear();
+  console.log(
+    `Спасибо, ${userName}\n Набрано ${score} из ${
+      answerAndOuestion.length
+    } баллов\n Хочешь сыграть ещё? Введи ${chalk.green(
+      1
+    )}. Для выхода введи ${chalk.magenta(2)}`
+  );
 }
 
 quiz();
