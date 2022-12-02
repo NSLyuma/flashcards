@@ -3,30 +3,40 @@ const chalk = require('chalk');
 const readlineSync = require('readline-sync');
 
 function getQuestion(string) {
-  const content = fs.readFileSync(`./topics/${string}`,'utf-8');
-  return content.split('\n')
+  const content = fs.readFileSync(`./topic-2/${string}`, 'utf-8');
+  return content.split('\n').map((row) => row.split('|'));
 }
 
 function quiz() {
-  console.log('Hello! Enter your name');
+  console.log(chalk.red('Hello! Enter your name'));
   const userName = readlineSync.question('--> ');
   console.clear();
-  console.log(`\n${userName}, выбери тему \n`);
-  const folder = fs.readdirSync('./topics');
+  console.log(chalk.blue(`\n${userName}, выбери тему \n`));
+  const folder = fs.readdirSync('./topic-2');
   console.log(folder.map((file) => file.slice(0, -4)).join('\n'));
   let themeChoice = readlineSync.question('--> ');
-  console.log(themeChoice)
-  for (let i=0; i<folder.length; i+=1) {
-    if(folder[i].slice(0,1) === themeChoice) {
-      const currentQuestion = folder[i]
-      console.log(getQuestion(currentQuestion))
+  let answerAndOuestion;
+  for (let i = 0; i < folder.length; i += 1) {
+    if (folder[i].slice(0, 1) === themeChoice) {
+      const currentQuestion = folder[i];
+      answerAndOuestion = getQuestion(currentQuestion);
     }
   }
+  let score = 0;
+  for (let i = 0; i < answerAndOuestion.length; i += 1) {
+    console.log(answerAndOuestion[i][0]);
+    const userAnswer = readlineSync.question('--> ');
+    if (answerAndOuestion[i][1].toLowerCase() === userAnswer.toLowerCase()) {
+      console.log('Молодец');
+      score += 1;
+    } else {
+      console.log('Не молодец');
+    }
+  }
+  console.log(`Спасибо ${score}`);
 }
-
 
 quiz();
 
 // сделать разноцветным
 // сделать проверку что пользователь при выборе темы ввел число
-
