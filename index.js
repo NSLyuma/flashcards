@@ -1,5 +1,6 @@
-const readlineSync = require('readline-sync');
 const fs = require('fs');
+const chalk = require('chalk');
+const readlineSync = require('readline-sync');
 
 function getQuestion(string) {
   const content = fs.readFileSync(`./topics/${string}`,'utf-8');
@@ -28,3 +29,4 @@ quiz();
 
 // сделать разноцветным
 // сделать проверку что пользователь при выборе темы ввел число
+
