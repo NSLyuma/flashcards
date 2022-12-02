@@ -1,5 +1,6 @@
-const readlineSync = require('readline-sync');
 const fs = require('fs');
+const chalk = require('chalk');
+const readlineSync = require('readline-sync');
 
 function quiz() {
   console.log('Hello! Enter your name');
