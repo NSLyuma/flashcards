@@ -1,6 +1,7 @@
 const fs = require('fs');
 const chalk = require('chalk');
 const readlineSync = require('readline-sync');
+const { gotRightAnswer, gotWrongAnswer } = require('./getRandomEmoji');
 
 function getQuestion(string) {
   const content = fs.readFileSync(`./topic-2/${string}`, 'utf-8');
@@ -22,7 +23,7 @@ const userName = getUserName();
 function quiz() {
   console.log(
     chalk.rgb(8, 239, 243).italic.bold(`\n${userName}`) +
-      chalk.rgb(43, 104, 237)(`, выбери тему\n`)
+      chalk.rgb(43, 104, 237)(` выбери тему\n`)
   );
   const folder = fs.readdirSync('./topic-2');
   console.log(folder.map((file) => file.slice(0, -4)).join('\n'));
@@ -31,10 +32,11 @@ function quiz() {
 
   if (!Number(themeChoice)) {
     console.log(chalk.red.bold('ЭТО НЕ ЧИСЛО! 😐'));
-    quiz();
-  } else if (Number(themeChoice) < 0 || Number(themeChoice) > folder.length) {
+    return quiz();
+  }
+  if (Number(themeChoice) < 0 || Number(themeChoice) > folder.length) {
     console.log(chalk.red.bold(`Введи число от 1 до ${folder.length}! 🙄`));
-    quiz();
+    return quiz();
   }
 
   let answerAndOuestion;
@@ -45,29 +47,37 @@ function quiz() {
     }
   }
   let score = 0;
-  for (let i = 0; i < answerAndOuestion.length; i += 1) {
-    console.log(answerAndOuestion[i][0]);
-    const userAnswer = readlineSync.question('--> ');
-    if (answerAndOuestion[i][1].toLowerCase() === userAnswer.toLowerCase()) {
-      console.log(chalk.green.bold('Молодец'));
-      score += 1;
-    } else {
-      console.log(chalk.red.bold('Не молодец'));
+  if (answerAndOuestion) {
+    for (let i = 0; i < answerAndOuestion.length; i += 1) {
+      console.log(answerAndOuestion[i][0]);
+      const userAnswer = readlineSync.question('--> ');
+      if (answerAndOuestion[i][1].toLowerCase() === userAnswer.toLowerCase()) {
+        console.log(chalk.green.bold(`Молодец ${gotRightAnswer()}`));
+        score += 1;
+      } else {
+        console.log(chalk.red.bold(`Не молодец ${gotWrongAnswer()}`));
+      }
     }
   }
   console.clear();
-  console.log(
-    `Спасибо, ${userName}\n Набрано ${score} из ${
-      answerAndOuestion.length
-    } баллов\n Хочешь сыграть ещё? Введи ${chalk.green(
-      1
-    )} для выхода введи ${chalk.magenta(2)}`
-  );
+
+  if (answerAndOuestion) {
+    console.log(
+      `Спасибо, ${chalk
+        .rgb(8, 239, 243)
+        .italic.bold(userName)}\n Набрано ${score} из ${
+        answerAndOuestion.length
+      } баллов\n Хочешь сыграть ещё? Введи ${chalk.green(
+        1
+      )} для выхода введи ${chalk.magenta(2)}`
+    );
+  }
+
   const nextStep = readlineSync.question('--> ');
   if (nextStep === '1') {
     quiz();
   } else {
-    console.log('Спасибо за игру!');
+    console.log(chalk.rgb(114, 16, 234).bold('Спасибо за игру!'));
   }
 }
 
