@@ -9,24 +9,31 @@ function getQuestion(string) {
 
 function getUserName() {
   console.clear();
-  console.log(chalk.red('Hello! Enter your name'));
+  console.log(chalk.rgb(114, 16, 234).bold('Привет! 🖐'));
+  console.log(
+    chalk.rgb(43, 237, 234).bold('Меня зовут Эд, давай поиграем? (づ ◕‿◕ )づ')
+  );
+  console.log(chalk.rgb(43, 104, 237).bold('Для начала введи своё имя'));
   return readlineSync.question('--> ');
 }
 
 const userName = getUserName();
 
 function quiz() {
-  console.log(chalk.blue(`\n${userName}, выбери тему \n`));
+  console.log(
+    chalk.rgb(8, 239, 243).italic.bold(`\n${userName}`) +
+      chalk.rgb(43, 104, 237)(`, выбери тему\n`)
+  );
   const folder = fs.readdirSync('./topic-2');
   console.log(folder.map((file) => file.slice(0, -4)).join('\n'));
   const themeChoice = readlineSync.question('--> ');
   console.clear();
 
   if (!Number(themeChoice)) {
-    console.log('ЭТО НЕ ЧИСЛО! >:(');
+    console.log(chalk.red.bold('ЭТО НЕ ЧИСЛО! 😐'));
     quiz();
   } else if (Number(themeChoice) < 0 || Number(themeChoice) > folder.length) {
-    console.log(`Введи число от 1 до ${folder.length}!`);
+    console.log(chalk.red.bold(`Введи число от 1 до ${folder.length}! 🙄`));
     quiz();
   }
 
@@ -42,10 +49,10 @@ function quiz() {
     console.log(answerAndOuestion[i][0]);
     const userAnswer = readlineSync.question('--> ');
     if (answerAndOuestion[i][1].toLowerCase() === userAnswer.toLowerCase()) {
-      console.log('Молодец');
+      console.log(chalk.green.bold('Молодец'));
       score += 1;
     } else {
-      console.log('Не молодец');
+      console.log(chalk.red.bold('Не молодец'));
     }
   }
   console.clear();
@@ -54,14 +61,13 @@ function quiz() {
       answerAndOuestion.length
     } баллов\n Хочешь сыграть ещё? Введи ${chalk.green(
       1
-    )}. Для выхода введи ${chalk.magenta(2)}`
+    )} для выхода введи ${chalk.magenta(2)}`
   );
   const nextStep = readlineSync.question('--> ');
   if (nextStep === '1') {
     quiz();
   } else {
     console.log('Спасибо за игру!');
-    return;
   }
 }
 
