@@ -7,14 +7,29 @@ function getQuestion(string) {
   return content.split('\n').map((row) => row.split('|'));
 }
 
-function quiz() {
-  console.log(chalk.red('Hello! Enter your name'));
-  const userName = readlineSync.question('--> ');
+function getUserName() {
   console.clear();
+  console.log(chalk.red('Hello! Enter your name'));
+  return readlineSync.question('--> ');
+}
+
+const userName = getUserName();
+
+function quiz() {
   console.log(chalk.blue(`\n${userName}, выбери тему \n`));
   const folder = fs.readdirSync('./topic-2');
   console.log(folder.map((file) => file.slice(0, -4)).join('\n'));
-  let themeChoice = readlineSync.question('--> ');
+  const themeChoice = readlineSync.question('--> ');
+  console.clear();
+
+  if (!Number(themeChoice)) {
+    console.log('ЭТО НЕ ЧИСЛО! >:(');
+    quiz();
+  } else if (Number(themeChoice) < 0 || Number(themeChoice) > folder.length) {
+    console.log(`Введи число от 1 до ${folder.length}!`);
+    quiz();
+  }
+
   let answerAndOuestion;
   for (let i = 0; i < folder.length; i += 1) {
     if (folder[i].slice(0, 1) === themeChoice) {
@@ -33,10 +48,21 @@ function quiz() {
       console.log('Не молодец');
     }
   }
-  console.log(`Спасибо ${score}`);
+  console.clear();
+  console.log(
+    `Спасибо, ${userName}\n Набрано ${score} из ${
+      answerAndOuestion.length
+    } баллов\n Хочешь сыграть ещё? Введи ${chalk.green(
+      1
+    )}. Для выхода введи ${chalk.magenta(2)}`
+  );
+  const nextStep = readlineSync.question('--> ');
+  if (nextStep === '1') {
+    quiz();
+  } else {
+    console.log('Спасибо за игру!');
+    return;
+  }
 }
 
 quiz();
-
-// сделать разноцветным
-// сделать проверку что пользователь при выборе темы ввел число
